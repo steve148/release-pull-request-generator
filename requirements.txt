@@ -1,7 +1,12 @@
 certifi==2019.6.16
 chardet==3.0.4
 Deprecated==1.2.5
+entrypoints==0.3
+flake8==3.7.7
 idna==2.8
+mccabe==0.6.1
+pycodestyle==2.5.0
+pyflakes==2.1.1
 PyGithub==1.43.7
 PyJWT==1.7.1
 requests==2.22.0
