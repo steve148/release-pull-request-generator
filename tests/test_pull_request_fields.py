@@ -39,7 +39,7 @@ class TestPullRequestFields(unittest.TestCase):
 
         self.assertEqual(result["body"], "# Changelog")
 
-    def test_body_one_commit(self):
+    def test_body_one_pull_request(self):
         commits = [
             {
                 "message": "Merge pull request #1234 from somewhere.\n\nPR title",
@@ -54,11 +54,30 @@ class TestPullRequestFields(unittest.TestCase):
             result["body"], "# Changelog\n* lennoxstevenson: #1234 - PR title"
         )
 
-    def test_body_multiple_commits_one_pull_request(self):
-        pass
+    def test_body_multiple_pull_requests(self):
+        commits = [
+            {
+                "message": "Merge pull request #1234 from somewhere.\n\nPeanut Butter",
+                "author": "lennoxstevenson",
+            },
+            {
+                "message": "Merge pull request #5678 from somewhere.\n\nJelly Time",
+                "author": "lennoxstevenson",
+            },
+        ]
+        repository_mock = mock_repository(commits=commits)
 
-    def test_body_multiple_commits_multiple_pull_requests(self):
-        pass
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+
+        expected_body = "\n".join(
+            [
+                "# Changelog",
+                "* lennoxstevenson: #1234 - Peanut Butter",
+                "* lennoxstevenson: #5678 - Jelly Time",
+            ]
+        )
+
+        self.assertEqual(result["body"], expected_body)
 
 
 if __name__ == "__main__":
