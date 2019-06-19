@@ -1,26 +1,21 @@
 import unittest
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock
 from datetime import date
 
 import pull_request_fields
 
 
-def mock_repository():
-    message_mock = PropertyMock()
-    message = "Merge pull request #1 from somewhere.\n\nPull Request title"
-    message_mock.return_value = message
+def mock_repository(commits=[]):
+    commit_mocks = []
+    for commit in commits:
+        git_commit_mock = MagicMock(message=commit["message"])
+        commit_mock = MagicMock(commit=git_commit_mock, author=commit["author"])
+        commit_mocks.append(commit_mock)
 
-    git_commit_mock = MagicMock()
-    git_commit_mock.message = message_mock
-
-    commit_mock = MagicMock()
-    commit_mock.commit = git_commit_mock
-
-    compare_mock = MagicMock()
-    compare_mock.commits = [commit_mock]
+    comparison_mock = MagicMock(commits=commit_mocks)
 
     repository_mock = MagicMock()
-    repository_mock.compare = compare_mock
+    repository_mock.compare.return_value = comparison_mock
 
     return repository_mock
 
@@ -61,12 +56,18 @@ class TestPullRequestFields(unittest.TestCase):
         self.assertEqual(result["body"], "# Changelog")
 
     def test_body_one_commit(self):
-        repository_mock = mock_repository()
+        commits = [
+            {
+                "message": "Merge pull request #1234 from somewhere.\n\nPR title",
+                "author": "lennoxstevenson",
+            }
+        ]
+        repository_mock = mock_repository(commits=commits)
 
         result = pull_request_fields.pull_request_fields(repository_mock, None)
 
         self.assertEqual(
-            result["body"], "# Changelog\n* lennoxstevenson: #1234 - Pull Request title"
+            result["body"], "# Changelog\n* lennoxstevenson: #1234 - PR title"
         )
 
     def test_body_multiple_commits_one_pull_request(self):

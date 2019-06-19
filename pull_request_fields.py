@@ -2,31 +2,35 @@ from datetime import date
 import re
 
 
-def is_merge_commit(message):
-    message_regex = "^Merge pull request #(\d+).*\n\n(.*)$"
-    message_pattern = re.compile(merge_commit_message_regex)
+MERGE_COMMIT_MESSAGE_REGEX = r"^Merge pull request #(\d+).*\n\n(.*)$"
+MERGE_COMMIT_MESSAGE_PATTERN = re.compile(MERGE_COMMIT_MESSAGE_REGEX)
 
-    return message_pattern.match(message)
+
+def matches_merge_commit_pattern(message):
+    return MERGE_COMMIT_MESSAGE_PATTERN.match(message)
 
 
 def commit_changelog_message(commit):
-    return "* lennoxstevenson: #1234 - Pull Request title"
+    pull_request_number, pull_request_title = matches_merge_commit_pattern(
+        commit.commit.message
+    ).groups()
+    author = commit.author
+
+    return "* {author}: #{pull_request_number} - {pull_request_title}".format(
+        author=author,
+        pull_request_number=pull_request_number,
+        pull_request_title=pull_request_title,
+    )
 
 
 def __pull_request_body(repository, base, head):
-    print()
-
     compare = repository.compare(base, head)
-
-    print(compare.commits[0].commit.message)
 
     merge_commits = [
         commit
         for commit in compare.commits
-        if is_merge_commit_message(commit.commit.message)
+        if matches_merge_commit_pattern(commit.commit.message)
     ]
-
-    print(merge_commits)
 
     pull_request_body_lines = ["# Changelog"]
 
@@ -44,4 +48,3 @@ def pull_request_fields(repository, head):
     body = __pull_request_body(repository, base, head)
 
     return {"title": title, "body": body, "base": base, "head": head}
-
