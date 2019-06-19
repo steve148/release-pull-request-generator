@@ -12,6 +12,6 @@ repos:
       - id: test
         name: test
         entry: python -m unittest discover tests/
-        arguments: [--quiet]
+        pass_filenames: false
         language: system
-        files: \.py$
+        types: [python]
