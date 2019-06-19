@@ -17,7 +17,7 @@ class TestPullRequestFields(unittest.TestCase):
 
         repository_mock = MagicMock()
 
-        result = create_release_branch.create_release_branch(repository_mock)
+        result = create_release_branch.create_release_branch(repository_mock, "develop")
 
         self.assertEqual(result, "release/2019-06-13-1a2b3c4d")
 
@@ -37,7 +37,7 @@ class TestPullRequestFields(unittest.TestCase):
         repository_mock = MagicMock()
         repository_mock.get_branch.return_value = develop_branch_mock
 
-        create_release_branch.create_release_branch(repository_mock)
+        create_release_branch.create_release_branch(repository_mock, "develop")
 
         repository_mock.create_git_ref.assert_called_once_with(
             ref="refs/heads/release/2019-06-13-1a2b3c4d", sha="11111111"
