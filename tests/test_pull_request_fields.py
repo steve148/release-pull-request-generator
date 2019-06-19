@@ -28,30 +28,14 @@ class TestPullRequestFields(unittest.TestCase):
         date_mock.today.return_value = date(2019, 6, 13)
         date_mock.side_effect = lambda *args, **kw: date(*args, **kw)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None)
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
 
         self.assertEqual(result["title"], "Release 2019-06-13")
-
-    def test_base(self):
-        repository_mock = mock_repository()
-
-        result = pull_request_fields.pull_request_fields(repository_mock, None)
-
-        self.assertEqual(result["base"], "master")
-
-    def test_head(self):
-        repository_mock = mock_repository()
-
-        result = pull_request_fields.pull_request_fields(
-            repository_mock, "release-2019-06-14-a1b2c3d4"
-        )
-
-        self.assertEqual(result["head"], "release-2019-06-14-a1b2c3d4")
 
     def test_body_no_commits(self):
         repository_mock = mock_repository()
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None)
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
 
         self.assertEqual(result["body"], "# Changelog")
 
@@ -64,7 +48,7 @@ class TestPullRequestFields(unittest.TestCase):
         ]
         repository_mock = mock_repository(commits=commits)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None)
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
 
         self.assertEqual(
             result["body"], "# Changelog\n* lennoxstevenson: #1234 - PR title"

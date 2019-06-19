@@ -41,10 +41,9 @@ def __pull_request_body(repository, base, head):
     return "\n".join(pull_request_body_lines)
 
 
-def pull_request_fields(repository, head):
+def pull_request_fields(repository, base, head):
     title = "Release {today}".format(today=date.today())
-    base = "master"
 
     body = __pull_request_body(repository, base, head)
 
-    return {"title": title, "body": body, "base": base, "head": head}
+    return {"title": title, "body": body}
