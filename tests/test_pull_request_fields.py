@@ -9,7 +9,8 @@ def mock_repository(commits=[]):
     commit_mocks = []
     for commit in commits:
         git_commit_mock = MagicMock(message=commit["message"])
-        commit_mock = MagicMock(commit=git_commit_mock, author=commit["author"])
+        named_user_mock = MagicMock(login=commit["login"])
+        commit_mock = MagicMock(commit=git_commit_mock, author=named_user_mock)
         commit_mocks.append(commit_mock)
 
     comparison_mock = MagicMock(commits=commit_mocks)
@@ -43,26 +44,24 @@ class TestPullRequestFields(unittest.TestCase):
         commits = [
             {
                 "message": "Merge pull request #1234 from somewhere.\n\nPR title",
-                "author": "lennoxstevenson",
+                "login": "tonystark",
             }
         ]
         repository_mock = mock_repository(commits=commits)
 
         result = pull_request_fields.pull_request_fields(repository_mock, None, None)
 
-        self.assertEqual(
-            result["body"], "# Changelog\n* lennoxstevenson: #1234 - PR title"
-        )
+        self.assertEqual(result["body"], "# Changelog\n* @tonystark: #1234 - PR title")
 
     def test_body_multiple_pull_requests(self):
         commits = [
             {
                 "message": "Merge pull request #1234 from somewhere.\n\nPeanut Butter",
-                "author": "lennoxstevenson",
+                "login": "tonystark",
             },
             {
                 "message": "Merge pull request #5678 from somewhere.\n\nJelly Time",
-                "author": "lennoxstevenson",
+                "login": "tonystark",
             },
         ]
         repository_mock = mock_repository(commits=commits)
@@ -72,12 +71,55 @@ class TestPullRequestFields(unittest.TestCase):
         expected_body = "\n".join(
             [
                 "# Changelog",
-                "* lennoxstevenson: #1234 - Peanut Butter",
-                "* lennoxstevenson: #5678 - Jelly Time",
+                "* @tonystark: #1234 - Peanut Butter",
+                "* @tonystark: #5678 - Jelly Time",
             ]
         )
 
         self.assertEqual(result["body"], expected_body)
+
+    def test_reviewers_no_commits(self):
+        repository_mock = mock_repository()
+
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+
+        self.assertEqual(result["reviewers"], [])
+
+    def test_reviewers_one_reviewer(self):
+        commits = [
+            {
+                "message": "Merge pull request #1234 from somewhere.\n\nPeanut Butter",
+                "login": "tonystark",
+            },
+            {
+                "message": "Merge pull request #5678 from somewhere.\n\nJelly Time",
+                "login": "tonystark",
+            },
+        ]
+
+        repository_mock = mock_repository(commits=commits)
+
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+
+        self.assertEqual(result["reviewers"], ["tonystark"])
+
+    def test_reviewers_mutliple_reviewers(self):
+        commits = [
+            {
+                "message": "Merge pull request #1234 from somewhere.\n\nPeanut Butter",
+                "login": "tonystark",
+            },
+            {
+                "message": "Merge pull request #5678 from somewhere.\n\nJelly Time",
+                "login": "brucebanner",
+            },
+        ]
+
+        repository_mock = mock_repository(commits=commits)
+
+        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+
+        self.assertEqual(set(result["reviewers"]), {"brucebanner", "tonystark"})
 
 
 if __name__ == "__main__":

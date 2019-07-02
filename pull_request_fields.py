@@ -10,20 +10,44 @@ def matches_merge_commit_pattern(message):
     return MERGE_COMMIT_MESSAGE_PATTERN.match(message)
 
 
-def commit_changelog_message(commit):
-    pull_request_number, pull_request_title = matches_merge_commit_pattern(
-        commit.commit.message
-    ).groups()
-    author = commit.author
+def merge_commit_changelog_message(commit):
+    (
+        merge_commit_pull_request_number,
+        merge_commit_pull_request_title,
+    ) = matches_merge_commit_pattern(commit.commit.message).groups()
 
-    return "* {author}: #{pull_request_number} - {pull_request_title}".format(
-        author=author,
-        pull_request_number=pull_request_number,
-        pull_request_title=pull_request_title,
+    author_login = commit.author.login
+
+    return "* @{author_login}: #{pull_request_number} - {pull_request_title}".format(
+        author_login=author_login,
+        pull_request_number=merge_commit_pull_request_number,
+        pull_request_title=merge_commit_pull_request_title,
     )
 
 
-def __pull_request_body(repository, base, head):
+def pull_request_title():
+    return "Release {today}".format(today=date.today())
+
+
+def pull_request_body(merge_commits):
+    pull_request_body_lines = ["# Changelog"]
+
+    pull_request_body_lines.extend(
+        [merge_commit_changelog_message(commit) for commit in merge_commits]
+    )
+
+    return "\n".join(pull_request_body_lines)
+
+
+def pull_request_reviewers(merge_commits):
+    author_logins = [commit.author.login for commit in merge_commits]
+
+    unique_logins = set(author_logins)
+
+    return list(unique_logins)
+
+
+def pull_request_fields(repository, base, head):
     compare = repository.compare(base, head)
 
     merge_commits = [
@@ -32,18 +56,8 @@ def __pull_request_body(repository, base, head):
         if matches_merge_commit_pattern(commit.commit.message)
     ]
 
-    pull_request_body_lines = ["# Changelog"]
+    title = pull_request_title()
+    body = pull_request_body(merge_commits)
+    reviewers = pull_request_reviewers(merge_commits)
 
-    pull_request_body_lines.extend(
-        [commit_changelog_message(commit) for commit in merge_commits]
-    )
-
-    return "\n".join(pull_request_body_lines)
-
-
-def pull_request_fields(repository, base, head):
-    title = "Release {today}".format(today=date.today())
-
-    body = __pull_request_body(repository, base, head)
-
-    return {"title": title, "body": body}
+    return {"title": title, "body": body, "reviewers": reviewers}
