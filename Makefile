@@ -9,6 +9,6 @@ help: ##  List all available commands.
 	@echo 'Targets:'
 	@perl -ne "$${HELP_SCRIPT}" $(MAKEFILE_LIST)
 
-.PHONY: test
-test: ## Run the unit tests against the project.
+.PHONY: tests
+tests: ## Run the unit tests against the project.
 	python -m unittest discover -s tests/
