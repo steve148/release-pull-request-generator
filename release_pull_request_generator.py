@@ -1,9 +1,10 @@
 import sys
 
 from github import Github
+
+from create_release_branch import create_release_branch
 from parse_command_line_arguments import parse_command_line_arguments
 from pull_request_fields import pull_request_fields
-from create_release_branch import create_release_branch
 
 
 def main():
@@ -20,12 +21,14 @@ def main():
 
     fields = pull_request_fields(repository, master_branch_name, release_branch_name)
 
-    repository.create_pull(
+    pull_request = repository.create_pull(
         title=fields["title"],
         body=fields["body"],
         base=master_branch_name,
         head=release_branch_name,
     )
+
+    pull_request.create_review_request(fields["reviewers"])
 
 
 if __name__ == "__main__":
