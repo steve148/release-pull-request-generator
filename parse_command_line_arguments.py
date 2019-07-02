@@ -11,4 +11,3 @@ def parse_command_line_arguments(args):
     parser.add_argument("github_token")
 
     return parser.parse_args(args)
-
