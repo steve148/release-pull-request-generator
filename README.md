@@ -4,7 +4,7 @@
 
 ## Installation
 
-First make sure you have [pipenv]() installed for whatever version of python you are running on.
+First make sure you have [pipenv](https://github.com/pypa/pipenv) installed for whatever version of python you are running on.
 
 ```shell
 pipenv --version
