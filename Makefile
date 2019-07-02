@@ -10,5 +10,9 @@ help: ##  List all available commands.
 	@perl -ne "$${HELP_SCRIPT}" $(MAKEFILE_LIST)
 
 .PHONY: tests
-tests: ## Run the unit tests against the project.
-	python -m unittest discover -s tests/
+tests: ##  Run the unit tests against the project.
+	pipenv run python -m unittest discover -s tests/
+
+.PHONY: lint
+lint: ##  Run linter checks against the project.
+	pipenv run flake8 **/*.py

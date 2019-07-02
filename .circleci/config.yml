@@ -1,0 +1,64 @@
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/release-pull-request-generator
+
+  docker:
+    - image: circleci/python:3.7.3
+
+chown_bin: &chown_bin
+  run: sudo chown -R circleci:circleci /usr/local/bin
+
+chown_python: &chown_python
+  run: sudo chown -R circleci:circleci /usr/local/lib/python3.7/site-packages
+
+restore_cache: &restore_cache
+  restore_cache:
+    key: dependencies-{{ checksum "Pipfile.lock" }}
+
+install_dependencies: &install_dependencies
+  run: |
+    sudo pip install pipenv
+    pipenv install --dev
+
+save_cache: &save_cache
+  save_cache:
+    key: dependencies-{{ checksum "Pipfile.lock" }}
+    paths:
+      - ".venv"
+      - "/usr/local/bin"
+      - "/usr/local/lib/python3.7/site-packages"
+
+jobs:
+  test:
+    <<: *defaults
+
+    steps:
+      - checkout
+      - *chown_bin
+      - *chown_python
+      - *restore_cache
+      - *install_dependencies
+      - *save_cache
+
+      - run: make tests
+
+  lint:
+    <<: *defaults
+
+    steps:
+      - checkout
+      - *chown_bin
+      - *chown_python
+      - *restore_cache
+      - *install_dependencies
+      - *save_cache
+
+      - run: make lint
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
+      - lint
