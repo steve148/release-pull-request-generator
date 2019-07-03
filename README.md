@@ -36,3 +36,7 @@ As an example, if I wanted to create a release pull request for a repository cal
 ```shell
 pipenv run python release_pull_request_generator.py chum_bucket/world_dominations_plans 1234abcd
 ```
+
+## Assumptions
+
+To figure out which Pull Requests are a part of the release being generated, this script looks for merge commits and infers the pull request fields from that commit. This means if you are rebasing onto develop (eg. no merge commits) then this release generator will not work :( There probably is a smart way to get around this, but for now I went the simple route. Let me know if you have a suggestion!
