@@ -2,9 +2,11 @@ from datetime import date
 from secrets import token_hex
 
 
-def create_release_branch(repository, develop_branch_name):
-    release_branch_name = "release/{release_date}-{unique_hash}".format(
-        release_date=date.today(), unique_hash=token_hex(8)
+def create_release_branch(repository, develop_branch_name, release_branch_prefix):
+    release_branch_name = "{prefix}/{release_date}-{unique_hash}".format(
+        prefix=release_branch_prefix,
+        release_date=date.today(),
+        unique_hash=token_hex(8),
     )
 
     develop_branch = repository.get_branch(develop_branch_name)

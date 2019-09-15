@@ -38,6 +38,18 @@ class TestParseCommandLineArgumentsModule(unittest.TestCase):
 
         self.assertEqual(args.master_branch, "master")
 
+    def test_returns_release_branch(self):
+        args = parse_command_line_arguments(
+            ["user/repository", "abc123", "--release-branch-prefix", "test"]
+        )
+
+        self.assertEqual(args.release_branch_prefix, "test")
+
+    def test_returns_default_release_branch(self):
+        args = parse_command_line_arguments(["user/repository", "abc123"])
+
+        self.assertEqual(args.release_branch_prefix, "release")
+
 
 if __name__ == "__main__":
     unittest.main()
