@@ -14,12 +14,15 @@ def main():
     github_token = args.github_token
     develop_branch = args.develop_branch
     master_branch = args.master_branch
+    release_branch_prefix = args.release_branch_prefix
 
     github = Github(github_token)
 
     repository = github.get_repo(repository_name)
 
-    release_branch = create_release_branch(repository, develop_branch)
+    release_branch = create_release_branch(
+        repository, develop_branch, release_branch_prefix
+    )
 
     fields = pull_request_fields(repository, master_branch, release_branch)
 
