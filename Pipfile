@@ -12,7 +12,7 @@ flake8-eradicate = "==0.2.0"
 rope = "==0.14.0"
 
 [packages]
-PyGithub = "==1.43.7"
+PyGithub = "==1.44"
 
 [requires]
 python_version = "3.7"
