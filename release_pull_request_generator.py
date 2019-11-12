@@ -12,6 +12,7 @@ def main():
 
     repository_name = args.repository_name
     github_token = args.github_token
+    pull_request_creator = args.pull_request_creator
     develop_branch = args.develop_branch
     master_branch = args.master_branch
     release_branch_prefix = args.release_branch_prefix
@@ -24,7 +25,9 @@ def main():
         repository, develop_branch, release_branch_prefix
     )
 
-    fields = pull_request_fields(repository, master_branch, release_branch)
+    fields = pull_request_fields(
+        repository, master_branch, release_branch, pull_request_creator
+    )
 
     pull_request = repository.create_pull(
         title=fields["title"],
