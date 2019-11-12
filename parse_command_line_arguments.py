@@ -15,6 +15,10 @@ def parse_command_line_arguments(args):
         """,
     )
     parser.add_argument(
+        "pull_request_creator",
+        help="Github username of user creating the pull request.",
+    )
+    parser.add_argument(
         "github_token",
         help="Personal access token with required permissions for creating release.",
     )
