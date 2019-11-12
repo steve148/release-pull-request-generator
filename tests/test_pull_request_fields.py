@@ -29,14 +29,18 @@ class TestPullRequestFields(unittest.TestCase):
         date_mock.today.return_value = date(2019, 6, 13)
         date_mock.side_effect = lambda *args, **kw: date(*args, **kw)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         self.assertEqual(result["title"], "Release 2019-06-13")
 
     def test_body_no_commits(self):
         repository_mock = mock_repository()
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         self.assertEqual(result["body"], "# Changelog")
 
@@ -49,7 +53,9 @@ class TestPullRequestFields(unittest.TestCase):
         ]
         repository_mock = mock_repository(commits=commits)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         self.assertEqual(result["body"], "# Changelog\n* @tonystark: #1234 - PR title")
 
@@ -66,7 +72,9 @@ class TestPullRequestFields(unittest.TestCase):
         ]
         repository_mock = mock_repository(commits=commits)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         expected_body = "\n".join(
             [
@@ -81,7 +89,9 @@ class TestPullRequestFields(unittest.TestCase):
     def test_reviewers_no_commits(self):
         repository_mock = mock_repository()
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         self.assertEqual(result["reviewers"], [])
 
@@ -99,7 +109,9 @@ class TestPullRequestFields(unittest.TestCase):
 
         repository_mock = mock_repository(commits=commits)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         self.assertEqual(result["reviewers"], ["tonystark"])
 
@@ -117,9 +129,31 @@ class TestPullRequestFields(unittest.TestCase):
 
         repository_mock = mock_repository(commits=commits)
 
-        result = pull_request_fields.pull_request_fields(repository_mock, None, None)
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, None
+        )
 
         self.assertEqual(set(result["reviewers"]), {"brucebanner", "tonystark"})
+
+    def test_reviewers_excludes_pull_request_creator(self):
+        commits = [
+            {
+                "message": "Merge pull request #1234 from somewhere.\n\nPeanut Butter",
+                "login": "tonystark",
+            },
+            {
+                "message": "Merge pull request #5678 from somewhere.\n\nJelly Time",
+                "login": "brucebanner",
+            },
+        ]
+
+        repository_mock = mock_repository(commits=commits)
+
+        result = pull_request_fields.pull_request_fields(
+            repository_mock, None, None, "tonystark"
+        )
+
+        self.assertEqual(set(result["reviewers"]), {"brucebanner"})
 
 
 if __name__ == "__main__":
