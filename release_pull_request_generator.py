@@ -38,6 +38,8 @@ def main():
 
     pull_request.create_review_request(fields["reviewers"])
 
+    pull_request.add_to_assignees(pull_request_creator)
+
 
 if __name__ == "__main__":
     main()
