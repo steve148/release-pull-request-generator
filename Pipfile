@@ -10,7 +10,7 @@ flake8-bandit = "==2.1.2"
 flake8-black = "==0.1.0"
 flake8-eradicate = "==0.2.3"
 rope = "==0.14.0"
-mypy = "==0.750"
+mypy = "==0.760"
 
 [packages]
 PyGithub = "==1.44.1"
