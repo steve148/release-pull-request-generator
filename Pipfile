@@ -13,7 +13,7 @@ rope = "==0.16.0"
 mypy = "==0.761"
 
 [packages]
-PyGithub = "==1.45"
+PyGithub = "==1.46"
 
 [requires]
 python_version = "3.7"
