@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 black = "==19.3b0"
-flake8 = "==3.7.9"
+flake8 = "==3.8.0"
 flake8-bandit = "==2.1.2"
 flake8-black = "==0.1.0"
 flake8-eradicate = "==0.3.0"
