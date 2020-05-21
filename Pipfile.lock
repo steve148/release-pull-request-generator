@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a20931079f3ef997fc5981e6dad07500c651fbe477c5ba3dd55c3d8de93aaa05"
+            "sha256": "1eb0e3a08c9da1867f9c9bc2d7a6f04552e0865192bd3db74c46126f7af581cc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -32,10 +32,10 @@
         },
         "deprecated": {
             "hashes": [
-                "sha256:0cf37d293a96805c6afd8b5fc525cb40f23a2cac9b2d066ac3bd4b04e72ceccc",
-                "sha256:55b41a15bda04c6a2c0d27dd4c2b7b81ffa6348c9cad8f077ac1978c59927ab9"
+                "sha256:525ba66fb5f90b07169fdd48b6373c18f1ee12728ca277ca44567a367d9d7f74",
+                "sha256:a766c1dccb30c5f6eb2b203f87edd1d8588847709c78589e1521d769addc8218"
             ],
-            "version": "==1.2.9"
+            "version": "==1.2.10"
         },
         "idna": {
             "hashes": [
@@ -140,10 +140,10 @@
         },
         "flake8-black": {
             "hashes": [
-                "sha256:6b5fe2a609fa750170da8d5b1ed7c11029bceaff025660be7f19307ec6fa0c35"
+                "sha256:10e7ff9f81f637a9471684e5624d6a32b11cba362b38df4e20fc8f761184440b"
             ],
             "index": "pypi",
-            "version": "==0.1.0"
+            "version": "==0.2.0"
         },
         "flake8-eradicate": {
             "hashes": [
@@ -283,10 +283,10 @@
         },
         "toml": {
             "hashes": [
-                "sha256:229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c",
-                "sha256:235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e"
+                "sha256:926b612be1e5ce0634a2ca03470f95169cf16f939018233a670519cb4ac58b0f",
+                "sha256:bda89d5935c2eac546d648028b9901107a595863cb36bae0c73ac804a9b4ce88"
             ],
-            "version": "==0.10.0"
+            "version": "==0.10.1"
         },
         "typed-ast": {
             "hashes": [
