@@ -9,7 +9,7 @@ flake8 = "==3.9.2"
 flake8-bandit = "==2.1.2"
 flake8-black = "==0.2.3"
 flake8-eradicate = "==1.1.0"
-rope = "==0.20.1"
+rope = "==0.21.0"
 mypy = "==0.910"
 
 [packages]
